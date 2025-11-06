@@ -1,7 +1,14 @@
 $(document).ready(function() {
     let table = $('#DataTable').DataTable({
         "order": [],
-        "columnDefs": [{ "orderable": false, "targets": 0 }]
+        "columnDefs": [{ "targets": 0 , "orderable": false}, 
+                        {"targets": [2,6],  render: function(data, type, row) {
+                        if (type === 'display' && data.length > 10) {
+                        return '<span title="' + data + '">' + data.substr(0, 10) + '...</span>';
+                        }
+                        return data;
+                    }
+        }]
     });
     let index=null;
     table.on('draw.dt', function() {
@@ -38,7 +45,7 @@ $(document).ready(function() {
         },
         fname:{
             required:"Name cannot be empty",
-            noDigits: "Name cannot have a number"
+            noDigits: "Name cannot have a number or special character."
         },
         optradio:{
             required: "Please select a Gender"
@@ -96,7 +103,7 @@ $.validator.addMethod("strongPassword", function(value, element) {
 
 
 $.validator.addMethod("noDigits", function(value, element) {
-    return this.optional(element) || !/\d/.test(value);
+    return this.optional(element) || /^[A-Za-z]+$/.test(value);
 }); 
     
     // edit button
